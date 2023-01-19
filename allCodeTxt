@@ -1,0 +1,406 @@
+import * as React from 'react';
+import ChartSection from './ChartSection';
+import Label from './Label';
+import './style.css';
+const getSingleDigit = (n) => {
+  return ((n - 1) % 9) + 1;
+};
+const allNumbers = [];
+export default function App() {
+  const [getNameValue, setNameValue] = React.useState(0);
+  const [getDOB, setDOBValue] = React.useState(0);
+  const [getDriverValue, setDriverValue] = React.useState(0);
+  const [getConductorValue, setConductorValue] = React.useState(0);
+  const [getMobileValue, setMobileValue] = React.useState(0);
+  const [displayChart, setDisplayChart] = React.useState(false);
+
+  const submitForm = () => {
+    !displayChart &&
+      allNumbers.push({
+        name: getNameValue.toString(),
+        driver: getDriverValue.toString(),
+        conductor: getConductorValue.toString(),
+        mobile: getMobileValue.toString(),
+        dob: getDOB,
+      });
+    setDisplayChart(true);
+  };
+  const handleDateChange = (e) => {
+    setDOBValue(
+      e.target.value
+        .split('-')
+        .join('')
+        .split('')
+        .filter((item) => Number(item) !== 0)
+    );
+    setDisplayChart(false);
+    allNumbers.length = 0;
+    const driver = Number(e.target.value.split('-')?.[2]);
+    const conductor = Number(e.target.value.split('-').join(''));
+    const driverSum = getSingleDigit(driver);
+    const conductorSum = getSingleDigit(conductor);
+    setConductorValue(conductorSum);
+    setDriverValue(driverSum);
+  };
+
+  const mobileNumberCalculation = (e) => {
+    setDisplayChart(false);
+    allNumbers.length = 0;
+    const value = Number(e.target.value.split('-').join(''));
+    const sum = getSingleDigit(value);
+    setMobileValue(sum);
+  };
+  const handleNameChange = (e) => {
+    setDisplayChart(false);
+    allNumbers.length = 0;
+    const values = [];
+    const name = e.target.value.toLowerCase().split('');
+    name.map((a) => {
+      if (a !== '' && typeof a !== 'number') {
+        if (a === 'a' || a === 'i' || a === 'j' || a === 'q' || a === 'y') {
+          values.push(1);
+        }
+        if (a === 'b' || a === 'k' || a === 'r') {
+          values.push(2);
+        }
+        if (a === 'c' || a === 'g' || a === 'l' || a === 's') {
+          values.push(3);
+        }
+        if (a === 'd' || a === 'm' || a === 't') {
+          values.push(4);
+        }
+        if (a === 'e' || a === 'h' || a === 'n') {
+          values.push(5);
+        }
+        if (a === 'u' || a === 'v' || a === 'w' || a === 'x') {
+          values.push(6);
+        }
+        if (a === 'o' || a === 'z') {
+          values.push(7);
+        }
+        if (a === 'f' || a === 'p') {
+          values.push(8);
+        }
+      }
+    });
+    const sum = getSingleDigit(values.join(''));
+    setNameValue(sum);
+  };
+
+  return (
+    <React.Fragment>
+      <div className="two alt-two">
+        <h1>
+          Numerology
+          <span>underlying patterns of the universe</span>
+        </h1>
+      </div>
+
+      <form>
+        <div style={{ width: '50%', float: 'left' }}>
+          <label>
+            <p className="label-txt">ENTER YOUR Name</p>
+            <input
+              type="text"
+              className="input"
+              id="name"
+              onChange={(e) => handleNameChange(e)}
+            />
+            <div className="line-box">
+              <div className="line"></div>
+            </div>
+          </label>
+          <label>
+            <p className="label-txt">ENTER YOUR mobile no</p>
+            <input
+              type="number"
+              className="input"
+              id="mbno"
+              onChange={(e) => mobileNumberCalculation(e)}
+            />
+            <div className="line-box">
+              <div className="line"></div>
+            </div>
+          </label>
+          <label>
+            <p className="label-txt">ENTER YOUR dob</p>
+            <input
+              type="date"
+              className="input"
+              placeholder=""
+              id="dob"
+              onChange={(e) => handleDateChange(e)}
+            />
+            <div className="line-box">
+              <div className="line"></div>
+            </div>
+          </label>
+          <button onClick={() => submitForm()} type="button">
+            submit
+          </button>{' '}
+        </div>
+        <div
+          style={{ width: '50%', float: 'left', textAlign: 'right' }}
+          className="label-calculation"
+        >
+          <Label value={null} text={'below is a calculation'} bold={true} />
+          <Label value={getNameValue} text={'Name'} bold={true} />
+          <Label value={getMobileValue} text={' Mobile no'} bold={true} />
+          <Label value={getDriverValue} text={'Driver Number'} bold={true} />
+          <Label value={getConductorValue} text={'Conductor'} bold={true} />
+        </div>
+      </form>
+      {displayChart && <ChartSection allNumbers={allNumbers as any} />}
+    </React.Fragment>
+  );
+}
+
+/***************************************************************************************************************************************/
+import * as React from 'react';
+
+const ChartSection = ({ allNumbers }) => {
+  console.log('allNumbers', allNumbers);
+  const onlyNumberOfArray = Object.values(allNumbers[0] as any);
+
+  const flattened = onlyNumberOfArray.flat(2); // Need to specify depth if > 1
+  console.log(flattened);
+  return (
+    <React.Fragment>
+      <div className="two alt-two">
+        <h1>
+          Analysis of Chart
+          <span>Luso Grid</span>
+        </h1>
+      </div>
+      <div>
+        <form>
+          <ul>
+            <li>
+              <ul className="test">
+                <li>{flattened.includes('4') ? 4 : '-'}</li>
+                <li>{flattened.includes('9') ? 9 : '-'}</li>
+                <li>{flattened.includes('2') ? 2 : '-'}</li>
+              </ul>
+            </li>
+            <li>
+              <ul className="test">
+                <li>{flattened.includes('3') ? 3 : '-'}</li>
+                <li>{flattened.includes('5') ? 5 : '-'}</li>
+                <li>{flattened.includes('7') ? 7 : '-'}</li>
+              </ul>
+            </li>
+            <li>
+              <ul className="test">
+                <li>{flattened.includes('8') ? 8 : '-'}</li>
+                <li>{flattened.includes('1') ? 1 : '-'}</li>
+                <li>{flattened.includes('6') ? 6 : '-'}</li>
+              </ul>
+            </li>
+          </ul>
+        </form>
+      </div>
+    </React.Fragment>
+  );
+};
+
+export default ChartSection;
+
+/***************************************************************************************************************************************/
+import * as React from 'react';
+
+const Label = ({ text, value, bold }) => {
+  return (
+    <label>
+      <p>
+        {bold ? <b>{text}</b> : text}{' '}
+        {value && value !== 0 ? <span className="pill">{value}</span> : null}
+      </p>
+    </label>
+  );
+};
+
+export default Label;
+
+/***************************************************************************************************************************************/
+body {
+  background: #c5e1a5;
+  font-family: 'Poor Richard';
+}
+form {
+  width: 60%;
+  margin: 35px auto;
+  background: #efefef;
+  padding: 60px 120px 80px 120px;
+
+  -webkit-box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.1);
+  display: flex;
+}
+label {
+  display: block;
+  position: relative;
+  margin: 40px 10px;
+  font-family: sans-serif;
+}
+.label-txt {
+  position: absolute;
+  top: -2.5em;
+  padding: 5px;
+  font-size: 0.8em;
+  letter-spacing: 1px;
+  color: rgb(120, 120, 120);
+  transition: ease 0.3s;
+  text-transform: uppercase;
+}
+.input {
+  width: 100%;
+  padding: 10px;
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+.line-box {
+  position: relative;
+  width: 100%;
+  height: 2px;
+  background: #bcbcbc;
+}
+
+.line {
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  top: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #8bc34a;
+  transition: ease 0.6s;
+}
+
+.input:focus + .line-box .line {
+  width: 100%;
+}
+
+.label-active {
+  top: -3em;
+}
+
+button {
+  display: inline-block;
+  padding: 12px 24px;
+  background: rgb(220, 220, 220);
+  font-weight: bold;
+  color: rgb(120, 120, 120);
+  border: none;
+  outline: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: ease 0.3s;
+}
+
+button:hover {
+  background: #8bc34a;
+  color: #ffffff;
+}
+
+/*---------------------------------*/
+
+h1 {
+  /*font-family: 'Vivaldi';*/
+  font-family: 'Poor Richard';
+  position: relative;
+  padding: 0;
+  margin: 0;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 40px;
+  color: #080808;
+  -webkit-transition: all 0.4s ease 0s;
+  -o-transition: all 0.4s ease 0s;
+  transition: all 0.4s ease 0s;
+}
+
+h1 span {
+  display: block;
+  font-size: 0.5em;
+  line-height: 1.3;
+  font-family: 'Raleway', sans-serif;
+}
+h1 em {
+  font-style: normal;
+  font-weight: 600;
+}
+/* === HEADING STYLE #2 === */
+.two {
+  margin-top: 30px;
+}
+.two h1 {
+  text-transform: capitalize;
+}
+.two h1:before {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 60px;
+  height: 2px;
+  content: '';
+  background-color: #c50000;
+}
+
+.two h1 span {
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  line-height: 3em;
+  padding-left: 0.25em;
+  color: rgba(0, 0, 0, 0.4);
+  padding-bottom: 10px;
+}
+.alt-two h1 {
+  text-align: center;
+}
+.alt-two h1:before {
+  left: 50%;
+  margin-left: -30px;
+}
+.label-calculation {
+  padding: 5px;
+
+  font-size: 0.8em;
+  letter-spacing: 1px;
+  color: rgb(120, 120, 120);
+  transition: ease 0.3s;
+  text-transform: uppercase;
+}
+
+.pill {
+  background: #666;
+  padding: 5px 15px;
+  color: #fff;
+  border-radius: 11px;
+}
+
+ul {
+  list-style: none;
+  width: 100%;
+}
+
+.test {
+  display: flex;
+}
+.test li {
+  float: left;
+  border: 1px solid;
+  padding: 10px;
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  line-height: 30px;
+}
+
+/***************************************************************************************************************************************/
+/***************************************************************************************************************************************/
+/***************************************************************************************************************************************/
+/***************************************************************************************************************************************/
